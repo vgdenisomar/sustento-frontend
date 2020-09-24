@@ -49,7 +49,6 @@ export default class Login extends Component {
     const hasErrors = key => (errors.includes(key) ? styles.hasErrors : null);
 
     return (
-      <KeyboardAvoidingView style={styles.login} behavior="padding">
         <Block padding={[0, theme.sizes.base * 2]}>
           <Text h1 bold>
             Login
@@ -92,7 +91,6 @@ export default class Login extends Component {
             </Button>
           </Block>
         </Block>
-      </KeyboardAvoidingView>
     );
   }
 }
