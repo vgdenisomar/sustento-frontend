@@ -2,18 +2,19 @@ import React, { Component } from "react";
 import {
   ActivityIndicator,
   Keyboard,
+  Dimensions,
   KeyboardAvoidingView,
   StyleSheet,
-  
+  Image, View
 } from "react-native";
 
 import { Button, Block, Input, Text } from "../components";
 import { theme } from "../constants";
 
-const VALID_EMAIL = "contact@react-ui-kit.com";
-const VALID_PASSWORD = "subscribe";
+const VALID_EMAIL = "vgdenisomar@gmail.com";
+const VALID_PASSWORD = "123";
 var STORAGE_KEY = 'Id_token';
-
+const { width, height } = Dimensions.get("window");
 const options = {};
 
 export default class Login extends Component {
@@ -40,7 +41,7 @@ export default class Login extends Component {
     this.setState({ loading: true });
     //var value = this.form.getValue();
   
-    fetch("http://192.168.0.25:3001/api/security/login", {
+    fetch("http://192.168.1.44:3001/api/security/login", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -54,12 +55,12 @@ export default class Login extends Component {
     })
     .then((response) => response.json())
     .then((responseData) => {
+          this.setState({ loading: false });
           navigation.navigate("Browse"),
           this._onValueChange(STORAGE_KEY, responseData.id_token)
         }
     )
     .done();
-  
     
 
     
@@ -85,12 +86,18 @@ export default class Login extends Component {
     const hasErrors = key => (errors.includes(key) ? styles.hasErrors : null);
 
     return (
-        <Block padding={[0, theme.sizes.base * 2]}>
-          <Text h1 bold>
+        <Block >
+          <Text style={styles.titulo} h1 bold>
             Login
           </Text>
           <Block middle>
-            <Input
+            <Image
+              source={require("../assets/images/logoSustento.png")}
+              resizeMode="contain"
+              style={{ paddingLeft:0,width, height: height / 5, overflow: "visible"}}
+            />
+            <View style={styles.container}>
+            <Input 
               label="Email"
               error={hasErrors("email")}
               style={[styles.input, hasErrors("email")]}
@@ -125,6 +132,8 @@ export default class Login extends Component {
                 Forgot your password?
               </Text>
             </Button>
+            </View>
+            
           </Block>
         </Block>
     );
@@ -132,6 +141,13 @@ export default class Login extends Component {
 }
 
 const styles = StyleSheet.create({
+  container:{
+    paddingHorizontal:theme.sizes.base * 2
+  },
+  titulo: {
+    marginTop:theme.sizes.base*1,
+    paddingHorizontal:theme.sizes.base * 2
+  },
   login: {
     flex: 1,
     justifyContent: "center"

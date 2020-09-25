@@ -118,7 +118,7 @@ class Explore extends Component {
     return (
       <Block>
         <Block flex={false} row center space="between" style={styles.header}>
-          <Text h1 bold>
+          <Text style={styles.titulo} h1 bold>
             Explore
           </Text>
           {this.renderSearch()}
@@ -141,6 +141,9 @@ Explore.defaultProps = {
 export default Explore;
 
 const styles = StyleSheet.create({
+  titulo: {
+    marginTop:theme.sizes.base*1
+  },
   header: {
     paddingHorizontal: theme.sizes.base * 2,
     paddingBottom: theme.sizes.base * 2

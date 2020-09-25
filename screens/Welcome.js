@@ -232,7 +232,7 @@ class Welcome extends Component {
             </Text>
           </Text>
           <Text h3 gray2 style={{ marginTop: theme.sizes.padding / 2 }}>
-          nada se pierde!
+          Nada se pierde!
           </Text>
         </Block>
         <Block center middle>
@@ -264,7 +264,7 @@ class Welcome extends Component {
 
 Welcome.defaultProps = {
   illustrations: [
-    { id: 1, source: require("../assets/images/illustration_1.png") },
+    { id: 1, source: require("../assets/images/logoSustento2.png") },
     { id: 2, source: require("../assets/images/illustration_2.png") },
     { id: 3, source: require("../assets/images/illustration_3.png") }
   ]
