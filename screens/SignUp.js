@@ -57,7 +57,8 @@ export default class SignUp extends Component {
     const hasErrors = key => (errors.includes(key) ? styles.hasErrors : null);
 
     return (
-        <Block padding={[0, theme.sizes.base * 2]}>
+      <KeyboardAvoidingView style={styles.signup}>
+ <        Block padding={[0, theme.sizes.base * 2]}>
           <Text h1 bold>
             Sign Up
           </Text>
@@ -107,6 +108,8 @@ export default class SignUp extends Component {
             </Button>
           </Block>
         </Block>
+      </KeyboardAvoidingView>
+       
     );
   }
 }

@@ -86,56 +86,58 @@ export default class Login extends Component {
     const hasErrors = key => (errors.includes(key) ? styles.hasErrors : null);
 
     return (
-        <Block >
-          <Text style={styles.titulo} h1 bold>
-            Login
-          </Text>
-          <Block middle>
-            <Image
-              source={require("../assets/images/logoSustento.png")}
-              resizeMode="contain"
-              style={{ paddingLeft:0,width, height: height / 5, overflow: "visible"}}
-            />
-            <View style={styles.container}>
-            <Input 
-              label="Email"
-              error={hasErrors("email")}
-              style={[styles.input, hasErrors("email")]}
-              defaultValue={this.state.email}
-              onChangeText={text => this.setState({ email: text })}
-            />
-            <Input
-              secure
-              label="Password"
-              error={hasErrors("password")}
-              style={[styles.input, hasErrors("password")]}
-              defaultValue={this.state.password}
-              onChangeText={text => this.setState({ password: text })}
-            />
-            <Button gradient onPress={() => this.handleLogin()}>
-              {loading ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <Text bold white center>
-                  Login
-                </Text>
-              )}
-            </Button>
+      <KeyboardAvoidingView style={styles.login}>
+          <Block >
+            <Text style={styles.titulo} h1 bold>
+              Login
+            </Text>
+            <Block middle>
+              <Image
+                source={require("../assets/images/logoSustento.png")}
+                resizeMode="contain"
+                style={{ paddingLeft:0,width, height: height / 5, overflow: "visible"}}
+              />
+              <View style={styles.container}>
+              <Input 
+                label="Email"
+                error={hasErrors("email")}
+                style={[styles.input, hasErrors("email")]}
+                defaultValue={this.state.email}
+                onChangeText={text => this.setState({ email: text })}
+              />
+              <Input
+                secure
+                label="Password"
+                error={hasErrors("password")}
+                style={[styles.input, hasErrors("password")]}
+                defaultValue={this.state.password}
+                onChangeText={text => this.setState({ password: text })}
+              />
+              <Button gradient onPress={() => this.handleLogin()}>
+                {loading ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Text bold white center>
+                    Login
+                  </Text>
+                )}
+              </Button>
 
-            <Button onPress={() => navigation.navigate("Forgot")}>
-              <Text
-                gray
-                caption
-                center
-                style={{ textDecorationLine: "underline" }}
-              >
-                Forgot your password?
-              </Text>
-            </Button>
-            </View>
-            
+              <Button onPress={() => navigation.navigate("Forgot")}>
+                <Text
+                  gray
+                  caption
+                  center
+                  style={{ textDecorationLine: "underline" }}
+                >
+                  Forgot your password?
+                </Text>
+              </Button>
+              </View>
+              
+            </Block>
           </Block>
-        </Block>
+      </KeyboardAvoidingView>
     );
   }
 }
