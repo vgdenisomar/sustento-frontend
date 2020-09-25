@@ -37,7 +37,7 @@ class Welcome extends Component {
           space="between"
         >
           <Text h2 light>
-            Terms of Service
+          Terminos de servicio
           </Text>
 
           <ScrollView style={{ marginVertical: theme.sizes.padding }}>
@@ -225,14 +225,14 @@ class Welcome extends Component {
       <Block>
         <Block center bottom flex={0.4}>
           <Text h1 center bold>
-            Your Home.
+          Con
             <Text h1 primary>
               {" "}
-              Greener.
+              SUSTENTO
             </Text>
           </Text>
           <Text h3 gray2 style={{ marginTop: theme.sizes.padding / 2 }}>
-            Enjoy the experience.
+          nada se pierde!
           </Text>
         </Block>
         <Block center middle>
@@ -252,7 +252,7 @@ class Welcome extends Component {
           </Button>
           <Button onPress={() => this.setState({ showTerms: true })}>
             <Text center caption gray>
-              Terms of service
+              Terminos
             </Text>
           </Button>
         </Block>
