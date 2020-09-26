@@ -18,6 +18,7 @@ class Browse extends Component {
     categories: []
   };
 
+
   componentDidMount() {
     this.setState({ categories: this.props.categories });
   }
@@ -57,7 +58,7 @@ class Browse extends Component {
       <Block>
         <Block flex={false} row center space="between" style={styles.header}>
           <Text h1 bold>
-            Browse
+            Bienvenido
           </Text>
           <Button onPress={() => navigation.navigate("Settings")}>
             <Image source={profile.avatar} style={styles.avatar} />

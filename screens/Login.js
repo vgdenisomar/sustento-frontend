@@ -89,7 +89,7 @@ export default class Login extends Component {
       <KeyboardAvoidingView style={styles.login}>
           <Block >
             <Text style={styles.titulo} h1 bold>
-              Login
+              Inicio de sesión
             </Text>
             <Block middle>
               <Image

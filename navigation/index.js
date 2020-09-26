@@ -1,7 +1,9 @@
 import React from "react";
-import { Image } from "react-native";
+import { Image,View } from "react-native";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+import {Ionicons,Entypo,AntDesign,Feather} from '@expo/vector-icons';
+
 
 import Welcome from "../screens/Welcome";
 import Login from "../screens/Login";
@@ -42,7 +44,6 @@ export function fromRight(duration = 300) {
     },
   };
 }
-
 const screens = createStackNavigator(
   {
     Welcome,
@@ -50,33 +51,32 @@ const screens = createStackNavigator(
     SignUp,
     Forgot,
     Explore,
-    Browse,
+    Browse:{
+      screen:Browse,
+      navigationOptions:({ navigation  })=>({
+        title: 'Sustento',
+        headerTitleStyle: { 
+          fontSize: 26, 
+      }, 
+        headerLeft: null,
+        headerRight:(
+            
+          <View style={{padding:5}}>
+          <AntDesign onPress={() => navigation.navigate('Settings')} name='shoppingcart' size={35} style={{paddingRight:theme.sizes.base * 2 }}></AntDesign>
+          </View>
+  
+        ),
+        headerStyle: {
+          paddingStart: theme.sizes.base * 1,
+          backgroundColor: '#c0e359',
+      },
+    })
+    },
     Product,
     Settings
   },
   {
     transitionConfig: () => fromRight()
-  },
-  {
-    defaultNavigationOptions: {
-      headerStyle: {
-        height: theme.sizes.base * 4,
-        backgroundColor: theme.colors.white, // or 'white
-        borderBottomColor: "transparent",
-        elevation: 0 // for android
-      },
-      headerBackImage: <Image source={require("../assets/icons/back2x.png")} />,
-      headerBackTitle: null,
-      headerLeftContainerStyle: {
-        alignItems: "center",
-        marginLeft: theme.sizes.base * 1,
-        paddingRight: theme.sizes.base
-      },
-      headerRightContainerStyle: {
-        alignItems: "center",
-        paddingRight: theme.sizes.base
-      }
-    }
   }
 );
 
