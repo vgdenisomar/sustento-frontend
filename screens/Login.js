@@ -10,6 +10,7 @@ import {
 
 import { Button, Block, Input, Text } from "../components";
 import { theme } from "../constants";
+import ApiUtils from './ApiUtils';
 
 const VALID_EMAIL = "vgdenisomar@gmail.com";
 const VALID_PASSWORD = "123";
@@ -41,7 +42,7 @@ export default class Login extends Component {
     this.setState({ loading: true });
     //var value = this.form.getValue();
   
-    fetch("http://192.168.1.44:3001/api/security/login", {
+    fetch("http://192.168.0.25:3001/api/security/login", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -53,13 +54,16 @@ export default class Login extends Component {
        
       })
     })
+    .then(ApiUtils.checkStatus)
     .then((response) => response.json())
-    .then((responseData) => {
+    .then((json) => {
           this.setState({ loading: false });
           navigation.navigate("Browse"),
-          this._onValueChange(STORAGE_KEY, responseData.id_token)
+          this._onValueChange(STORAGE_KEY, json.id_token)
+        
         }
     )
+    .catch((err) =>{alert("Credenciales Incorrectas");console.log('error:', err.message)})
     .done();
     
 
@@ -114,13 +118,10 @@ export default class Login extends Component {
                 onChangeText={text => this.setState({ password: text })}
               />
               <Button gradient onPress={() => this.handleLogin()}>
-                {loading ? (
-                  <ActivityIndicator size="small" color="white" />
-                ) : (
-                  <Text bold white center>
+              <Text bold white center>
                     Login
                   </Text>
-                )}
+               
               </Button>
 
               <Button onPress={() => navigation.navigate("Forgot")}>
