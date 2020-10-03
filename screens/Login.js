@@ -38,11 +38,11 @@ export default class Login extends Component {
     const { navigation } = this.props;
     const { email, password } = this.state;
     const errors = [];
-    Keyboard.dismiss();
     this.setState({ loading: true });
+    Keyboard.dismiss();
     //var value = this.form.getValue();
   
-    fetch("http://192.168.0.25:3001/api/security/login", {
+    fetch("http://192.168.1.44:3001/api/security/login", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -63,11 +63,8 @@ export default class Login extends Component {
         
         }
     )
-    .catch((err) =>{alert("Credenciales Incorrectas");console.log('error:', err.message)})
+    .catch((err) =>{this.setState({ loading: false });alert("Credenciales Incorrectas");console.log('error:', err.message)})
     .done();
-    
-
-    
 
     // check with backend API or with some static data
     /*if (email !== VALID_EMAIL) {
@@ -118,10 +115,13 @@ export default class Login extends Component {
                 onChangeText={text => this.setState({ password: text })}
               />
               <Button gradient onPress={() => this.handleLogin()}>
+              {loading ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
               <Text bold white center>
                     Login
                   </Text>
-               
+                )}
               </Button>
 
               <Button onPress={() => navigation.navigate("Forgot")}>
