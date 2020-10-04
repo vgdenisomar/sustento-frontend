@@ -8,13 +8,15 @@ import {
   Image, View
 } from "react-native";
 
+
+
 import { Button, Block, Input, Text } from "../components";
 import { theme } from "../constants";
 import ApiUtils from './ApiUtils';
 
 const VALID_EMAIL = "vgdenisomar@gmail.com";
 const VALID_PASSWORD = "123";
-var STORAGE_KEY = 'Id_token';
+var STORAGE_KEY = 'id_token';
 const { width, height } = Dimensions.get("window");
 const options = {};
 
@@ -26,13 +28,6 @@ export default class Login extends Component {
     loading: false
   };
 
-  async _onValueChange(item, selectedValue) {
-    try {
-      await AsyncStorage.setItem(item, selectedValue);
-    } catch (error) {
-      console.log('AsyncStorage error: ' + error.message);
-    }
-  }
 
   handleLogin() {
     const { navigation } = this.props;
@@ -42,7 +37,7 @@ export default class Login extends Component {
     Keyboard.dismiss();
     //var value = this.form.getValue();
   
-    fetch("http://192.168.1.44:3001/api/security/login", {
+    fetch("http://192.168.0.25:3001/api/security/login", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -56,29 +51,16 @@ export default class Login extends Component {
     })
     .then(ApiUtils.checkStatus)
     .then((response) => response.json())
-    .then((json) => {
+    .then((response) => {
           this.setState({ loading: false });
-          navigation.navigate("Browse"),
-          this._onValueChange(STORAGE_KEY, json.id_token)
-        
+          console.log(response.userF[0].codCliente),
+          ApiUtils._onValueChange(STORAGE_KEY, response.token),
+          navigation.navigate("Browse")
         }
     )
     .catch((err) =>{this.setState({ loading: false });alert("Credenciales Incorrectas");console.log('error:', err.message)})
     .done();
 
-    // check with backend API or with some static data
-    /*if (email !== VALID_EMAIL) {
-      errors.push("email");
-    }
-    if (password !== VALID_PASSWORD) {
-      errors.push("password");
-    }
-
-    this.setState({ errors, loading: false });
-
-    if (!errors.length) {
-      
-    }*/
   }
 
   render() {
