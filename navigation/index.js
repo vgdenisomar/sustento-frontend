@@ -54,20 +54,22 @@ const screens = createStackNavigator(
     Browse:{
       screen:Browse,
       navigationOptions:({ navigation  })=>({
-        title: 'Sustento',
+        title: 'Sustento App',
         headerTitleStyle: { 
-          fontSize: 26, 
+          fontSize: 24, 
+          color:'white',
+          fontWeight:'bold'
       }, 
         headerLeft: null,
         headerRight:(
             
           <View style={{padding:5}}>
-          <AntDesign onPress={() => navigation.navigate('Settings')} name='shoppingcart' size={35} style={{paddingRight:theme.sizes.base * 2 }}></AntDesign>
+          <AntDesign onPress={() => navigation.navigate('Settings')} name='shoppingcart' size={35} style={{paddingRight:theme.sizes.base * 1.5 }}></AntDesign>
           </View>
   
         ),
         headerStyle: {
-          paddingStart: theme.sizes.base * 1,
+          paddingStart: theme.sizes.base * 0.5,
           backgroundColor: '#c0e359',
       },
     })
