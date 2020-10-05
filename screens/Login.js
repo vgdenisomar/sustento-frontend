@@ -17,6 +17,7 @@ import ApiUtils from './ApiUtils';
 const VALID_EMAIL = "vgdenisomar@gmail.com";
 const VALID_PASSWORD = "123";
 var STORAGE_KEY = 'id_token';
+var USER = 'user';
 const { width, height } = Dimensions.get("window");
 const options = {};
 
@@ -28,6 +29,9 @@ export default class Login extends Component {
     loading: false
   };
 
+  componentDidMount(){
+    console.log("hola");
+  }
 
   handleLogin() {
     const { navigation } = this.props;
@@ -37,7 +41,7 @@ export default class Login extends Component {
     Keyboard.dismiss();
     //var value = this.form.getValue();
   
-    fetch("http://192.168.0.25:3001/api/security/login", {
+    fetch("http://192.168.1.44:3001/api/security/login", {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -53,8 +57,8 @@ export default class Login extends Component {
     .then((response) => response.json())
     .then((response) => {
           this.setState({ loading: false });
-          console.log(response.userF[0].codCliente),
-          ApiUtils._onValueChange(STORAGE_KEY, response.token),
+          ApiUtils._onValueChange(STORAGE_KEY, response.token);
+          ApiUtils._onValueChange(USER, JSON.stringify(response.userF[0]));
           navigation.navigate("Browse")
         }
     )
