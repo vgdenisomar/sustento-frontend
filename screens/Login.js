@@ -13,6 +13,7 @@ import {
 import { Button, Block, Input, Text } from "../components";
 import { theme } from "../constants";
 import ApiUtils from './ApiUtils';
+import { requestPermissionsAsync } from "expo-location";
 
 const VALID_EMAIL = "vgdenisomar@gmail.com";
 const VALID_PASSWORD = "123";
@@ -30,12 +31,24 @@ export default class Login extends Component {
   };
 
   componentDidMount(){
-    console.log("hola");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.lat = position.coords.latitude;
+        this.long = position.coords.longitude;
+        this.setState({
+          latitud: position.coords.latitude,
+          longitud: position.coords.longitude,
+          error: null,
+        });
+      },
+      (error) => this.setState({ error: error.message }),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
+    );
   }
 
   handleLogin() {
     const { navigation } = this.props;
-    const { email, password } = this.state;
+    const { email, password, longitud, latitud } = this.state;
     const errors = [];
     this.setState({ loading: true });
     Keyboard.dismiss();
@@ -49,8 +62,9 @@ export default class Login extends Component {
       },
       body: JSON.stringify({
         email: email,
-        password: password
-       
+        password: password,
+        longitud:longitud,
+        latitud:latitud
       })
     })
     .then(ApiUtils.checkStatus)

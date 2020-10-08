@@ -28,12 +28,15 @@ class Browse extends Component {
     var user =JSON.parse(await AsyncStorage.getItem('user'));
     this.setState({user:'Bienvenido '+user.nomCliente});
     fetch("http://192.168.1.44:3001/api/Proveedores/", {
-      method: "GET",
+      method: "POST",
       headers: {
         'Authorization': 'Bearer ' + token,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({
+        codCliente: user.codCliente,
+      })
     })
     .then(ApiUtils.checkStatus)
     .then((response) => response.json())
@@ -73,13 +76,16 @@ class Browse extends Component {
                 key={proveedor.codProveedor}
                 onPress={() => navigation.navigate("Explore",{id:proveedor.codProveedor} )}
               >
-                <Image style={{ width: '100%', height:(width - theme.sizes.padding * 2.4 - theme.sizes.base) / 3 }} source={{ uri: 'http://sustento.000webhostapp.com/image/comida2.jpeg' }} />
-                <Card shadow center middle style={styles.category}>
+                <Image style={{ width: '100%', height:(width - theme.sizes.padding * 2.4 - theme.sizes.base) / 3 }} source={{ uri: 'http://sustento.000webhostapp.com/'+proveedor.imagen }} />
+                <Card center middle style={styles.category}>
                   <Text medium height={20}>
                     {proveedor.nomProveedor}
                   </Text>
                   <Text gray caption>
-                    {proveedor.count} products
+                    {proveedor.productos} productos
+                  </Text>
+                  <Text style={{ color:'green'}} medium height={20}>
+                    {proveedor.distancia} KM
                   </Text>
                 </Card>
               </TouchableOpacity>
