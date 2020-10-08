@@ -3,9 +3,10 @@ import {
   ActivityIndicator,
   Dimensions,
   Image,
+  BackHandler,
   StyleSheet,
   ScrollView,
-  TouchableOpacity, AsyncStorage
+  TouchableOpacity, AsyncStorage,Alert 
 } from "react-native";
 
 import { Card, Badge, Button, Block, Text } from "../components";
@@ -14,16 +15,23 @@ import ApiUtils from './ApiUtils';
 
 const { width } = Dimensions.get("window");
 
+var app = {
+  backButtonDialog: true
+};
+
+
 class Browse extends Component {
   state = {
     active: "Products",
     proveedores: [],
     loading: true,
     user:"",
+    backButtonDialog: true
   };
 
 
   componentDidMount=async()=>{
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     var token=await AsyncStorage.getItem('id_token');
     var user =JSON.parse(await AsyncStorage.getItem('user'));
     this.setState({user:'Bienvenido '+user.nomCliente});
@@ -47,6 +55,27 @@ class Browse extends Component {
     .catch((err) =>{this.setState({ loading: false });alert("Credenciales Incorrectas");console.log('error:', err.message)})
     .done();
 
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+    handleBackButton() {
+      if(app.backButtonDialog){
+        // Prompt for exit
+        Alert.alert(
+          'Exit app',
+          'Exit app?',
+          [
+            { text: 'No', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+            { text: 'Yes', onPress: () => BackHandler.exitApp() },
+          ],
+          { cancelable: false })
+        return true;
+    }else{
+        return false;
+    }
   }
 
   render() {
@@ -74,7 +103,7 @@ class Browse extends Component {
             {proveedores.map(proveedor => (
               <TouchableOpacity
                 key={proveedor.codProveedor}
-                onPress={() => navigation.navigate("Explore",{id:proveedor.codProveedor} )}
+                onPress={() => navigation.navigate("Explore",{id:proveedor.codProveedor, nombre:proveedor.nomProveedor, latitud:proveedor.latitud, longitud:proveedor.longitud} )}
               >
                 <Image style={{ width: '100%', height:(width - theme.sizes.padding * 2.4 - theme.sizes.base) / 3 }} source={{ uri: 'http://sustento.000webhostapp.com/'+proveedor.imagen }} />
                 <Card center middle style={styles.category}>

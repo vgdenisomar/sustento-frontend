@@ -5,6 +5,7 @@ import {
   Image,
   StyleSheet,
   ScrollView,
+  BackHandler,
   TouchableOpacity
 } from "react-native";
 import * as Icon from "@expo/vector-icons";
@@ -18,7 +19,8 @@ const { width, height } = Dimensions.get("window");
 class Explore extends Component {
   state = {
     searchFocus: new Animated.Value(0.6),
-    searchString: null
+    searchString: null,
+    proveedor:"",
   };
 
   handleSearchFocus(status) {
@@ -114,12 +116,21 @@ class Explore extends Component {
     );
   }
 
+  componentDidMount(){
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    const { params } = this.props.navigation.state;
+    this.setState({
+      proveedor:params.nombre
+    })
+  }
+
   render() {
+    const { proveedor } = this.state;
     return (
       <Block>
         <Block flex={false} row center space="between" style={styles.header}>
           <Text style={styles.titulo} h1 bold>
-            Explore
+            {proveedor}
           </Text>
           {this.renderSearch()}
         </Block>
