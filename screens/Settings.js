@@ -17,6 +17,8 @@ class Settings extends Component {
 
   componentDidMount() {
     this.setState({ profile: this.props.profile });
+    const { params } = this.props.navigation.state;
+    console.log(params.id)
   }
 
   handleEdit(name, text) {

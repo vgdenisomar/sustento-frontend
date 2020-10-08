@@ -6,6 +6,7 @@ import {
   BackHandler,
   StyleSheet,
   ScrollView,
+  View,
   TouchableOpacity, AsyncStorage,Alert 
 } from "react-native";
 
@@ -26,12 +27,13 @@ class Browse extends Component {
     proveedores: [],
     loading: true,
     user:"",
-    backButtonDialog: true
+    backButtonDialog: true,
+    token:""
   };
 
 
   componentDidMount=async()=>{
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    //BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     var token=await AsyncStorage.getItem('id_token');
     var user =JSON.parse(await AsyncStorage.getItem('user'));
     this.setState({user:'Bienvenido '+user.nomCliente});
@@ -49,7 +51,7 @@ class Browse extends Component {
     .then(ApiUtils.checkStatus)
     .then((response) => response.json())
     .then((response) => {
-            this.setState({ proveedores: response, loading:false });
+            this.setState({ proveedores: response, loading:false, token:token });
         }
     )
     .catch((err) =>{this.setState({ loading: false });alert("Credenciales Incorrectas");console.log('error:', err.message)})
@@ -80,7 +82,7 @@ class Browse extends Component {
 
   render() {
     const { profile, navigation } = this.props;
-    const { proveedores,loading, user } = this.state;
+    const { proveedores,loading, user, token } = this.state;
 
     return (
       <Block>
@@ -103,13 +105,15 @@ class Browse extends Component {
             {proveedores.map(proveedor => (
               <TouchableOpacity
                 key={proveedor.codProveedor}
-                onPress={() => navigation.navigate("Explore",{id:proveedor.codProveedor, nombre:proveedor.nomProveedor, latitud:proveedor.latitud, longitud:proveedor.longitud} )}
+                onPress={() => navigation.navigate("Explore",{id:proveedor.codProveedor, nombre:proveedor.nomProveedor, latitud:proveedor.latitud, longitud:proveedor.longitud, imagen:proveedor.imagen, distancia:proveedor.distancia, token:token} )}
               >
-                <Image style={{ width: '100%', height:(width - theme.sizes.padding * 2.4 - theme.sizes.base) / 3 }} source={{ uri: 'http://sustento.000webhostapp.com/'+proveedor.imagen }} />
+                <Image style={{ borderTopRightRadius:4,borderTopLeftRadius:4,width: '100%', height:(width - theme.sizes.padding * 2.4 - theme.sizes.base) / 3 }} source={{ uri: 'http://sustento.000webhostapp.com/'+proveedor.imagen }} />
                 <Card center middle style={styles.category}>
-                  <Text medium height={20}>
-                    {proveedor.nomProveedor}
-                  </Text>
+                  <View style={styles.texto}>
+                    <Text medium height={20} style={styles.texto2} >
+                      {proveedor.nomProveedor}
+                    </Text>
+                  </View>
                   <Text gray caption>
                     {proveedor.productos} productos
                   </Text>
@@ -141,6 +145,14 @@ const styles = StyleSheet.create({
   avatar: {
     height: theme.sizes.base * 2.2,
     width: theme.sizes.base * 2.2
+  },
+  texto:{
+    borderRadius:5,
+    backgroundColor:"#F7CC20"
+  },
+  texto2:{
+    paddingHorizontal: theme.sizes.base * 1,
+    color:"white",
   },
   tabs: {
     borderBottomColor: theme.colors.gray2,

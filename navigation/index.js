@@ -50,7 +50,14 @@ const screens = createStackNavigator(
     Login,
     SignUp,
     Forgot,
-    Explore,
+    Explore:{
+      screen:Explore,
+      navigationOptions:({ navigation  })=>({
+        headerStyle: {
+          backgroundColor:'#c0e359'
+      },
+    })
+    },
     Browse:{
       screen:Browse,
       navigationOptions:({ navigation  })=>({
