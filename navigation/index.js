@@ -13,6 +13,7 @@ import Explore from "../screens/Explore";
 import Browse from "../screens/Browse";
 import Product from "../screens/Product";
 import Settings from "../screens/Settings";
+import Map from "../screens/map";
 import { Animated, Easing, Platform } from 'react-native';
 
 import { theme } from "../constants";
@@ -82,7 +83,16 @@ const screens = createStackNavigator(
     })
     },
     Product,
-    Settings
+    Settings,
+    Map:{
+      screen:Map,
+      navigationOptions:({ navigation  })=>({
+        title: 'Ubicación',
+        headerStyle: {
+          backgroundColor: '#c0e359',
+      },
+    })
+    }
   },
   {
     transitionConfig: () => fromRight()

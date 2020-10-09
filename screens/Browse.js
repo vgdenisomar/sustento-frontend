@@ -183,6 +183,19 @@ elevation: 5,
     marginBottom: theme.sizes.base * 3.5
   },
   category: {
+    borderRadius: 6,
+    borderTopRightRadius:0,
+    borderTopLeftRadius:0,
+    padding: theme.sizes.base + 4,
+    marginBottom: theme.sizes.base,
+    /*shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 1,
+    elevation: 5,*/
     // this should be dynamic based on screen width
     minWidth: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 2,
     maxWidth: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 2,
