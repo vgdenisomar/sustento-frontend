@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  Alert,
   ActivityIndicator,
   Keyboard,
   Dimensions,
@@ -54,7 +55,8 @@ export default class Login extends Component {
     Keyboard.dismiss();
     //var value = this.form.getValue();
   
-    fetch("http://192.168.1.44:3001/api/security/login", {
+    let url = ApiUtils.urla
+    fetch(`http://192.168.0.25:3001/api/security/login`, {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -76,7 +78,11 @@ export default class Login extends Component {
           navigation.navigate("Browse")
         }
     )
-    .catch((err) =>{this.setState({ loading: false });alert("Credenciales Incorrectas");console.log('error:', err.message)})
+    .catch((err) =>{this.setState({ loading: false });Alert.alert(
+      "Error",
+      "Credenciales Incorrectas",
+      { cancelable: false }
+    );console.log('error:', err.message)})
     .done();
 
   }
@@ -100,7 +106,7 @@ export default class Login extends Component {
               />
               <View style={styles.container}>
               <Input 
-                label="Email"
+                label="Correo electrónico"
                 error={hasErrors("email")}
                 style={[styles.input, hasErrors("email")]}
                 defaultValue={this.state.email}
@@ -108,7 +114,7 @@ export default class Login extends Component {
               />
               <Input
                 secure
-                label="Password"
+                label="Contraseña"
                 error={hasErrors("password")}
                 style={[styles.input, hasErrors("password")]}
                 defaultValue={this.state.password}
@@ -119,7 +125,7 @@ export default class Login extends Component {
                   <ActivityIndicator size="small" color="white" />
                 ) : (
               <Text bold white center>
-                    Login
+                    Entrar
                   </Text>
                 )}
               </Button>
@@ -131,7 +137,7 @@ export default class Login extends Component {
                   center
                   style={{ textDecorationLine: "underline" }}
                 >
-                  Forgot your password?
+                  Ovidaste tu contraseña?
                 </Text>
               </Button>
               </View>

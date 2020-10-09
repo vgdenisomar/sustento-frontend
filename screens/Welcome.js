@@ -37,7 +37,7 @@ class Welcome extends Component {
           space="between"
         >
           <Text h2 light>
-          Terminos de servicio
+          Terminos de Servicio
           </Text>
 
           <ScrollView style={{ marginVertical: theme.sizes.padding }}>
@@ -153,7 +153,7 @@ class Welcome extends Component {
               onPress={() => this.setState({ showTerms: false })}
             >
               <Text center white>
-                I understand
+                Acepto
               </Text>
             </Button>
           </Block>
@@ -242,17 +242,17 @@ class Welcome extends Component {
         <Block middle flex={0.5} margin={[0, theme.sizes.padding * 2]}>
           <Button gradient onPress={() => navigation.navigate("Login")}>
             <Text center semibold white>
-              Login
+              Inicio de Sesión
             </Text>
           </Button>
           <Button shadow onPress={() => navigation.navigate("SignUp")}>
             <Text center semibold>
-              Signup
+              Registrarse
             </Text>
           </Button>
           <Button onPress={() => this.setState({ showTerms: true })}>
             <Text center caption gray>
-              Terminos
+              Términos
             </Text>
           </Button>
         </Block>

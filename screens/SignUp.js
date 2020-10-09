@@ -9,11 +9,12 @@ import {
 
 import { Button, Block, Input, Text } from "../components";
 import { theme } from "../constants";
+import ApiUtils from './ApiUtils';
 
 export default class SignUp extends Component {
   state = {
     email: null,
-    username: null,
+    name: null,
     password: null,
     errors: [],
     loading: false
@@ -21,34 +22,79 @@ export default class SignUp extends Component {
 
   handleSignUp() {
     const { navigation } = this.props;
-    const { email, username, password } = this.state;
+    const { email, name, password } = this.state;
     const errors = [];
 
     Keyboard.dismiss();
     this.setState({ loading: true });
+    console.log(email, name, password);
 
-    // check with backend API or with some static data
-    if (!email) errors.push("email");
-    if (!username) errors.push("username");
-    if (!password) errors.push("password");
-
-    this.setState({ errors, loading: false });
-
-    if (!errors.length) {
-      Alert.alert(
-        "Success!",
-        "Your account has been created",
-        [
-          {
-            text: "Continue",
-            onPress: () => {
-              navigation.navigate("Browse");
-            }
-          }
-        ],
+    if(name === null || email === null || password === null){
+      this.setState({ loading: false });
+      return Alert.alert(
+        "Error",
+        "Llene todos los campos",
         { cancelable: false }
       );
     }
+
+    if(!(/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i).test(email)){
+      this.setState({ loading: false });
+      return Alert.alert(
+        "Error",
+        "El correo electrónico debe ser uno válido",
+        { cancelable: false }
+      );
+    }
+
+    if(! (/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%])[0-9A-Za-z\.!@#$%]{8,32}$/).test(password)){
+      this.setState({ loading: false });
+      return Alert.alert(
+        "Error",
+        "La contraseña debe contener al menos una Mayúscula, una Minúscula, un número y un signo especial ! @ # $ % y mínimo 8 caracteres",
+        { cancelable: false }
+      );
+    }
+
+    fetch("http://192.168.0.25:3001/api/security/signin",{
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        name: name,
+        password: password
+      })
+    })
+    .then(ApiUtils.checkStatus)
+    .then((response) => response.json())
+    .then((response) => {
+      console.log(response);
+          this.setState({ loading: false });
+          Alert.alert(
+            "Bienvenido!",
+            "Su cuenta fue creada con éxito",
+            [
+              {
+                text: "Continuar",
+                onPress: () => {
+                  navigation.navigate("Login");
+                }
+              }
+            ],
+            { cancelable: false }
+          );
+          
+        }
+    )
+    .catch((err) =>{this.setState({ loading: false });Alert.alert(
+      "Error",
+      "Ya existe una cuenta con este correo",
+      { cancelable: false }
+    );console.log('error:', err.message)})
+    .done();
   }
 
   render() {
@@ -60,27 +106,27 @@ export default class SignUp extends Component {
       <KeyboardAvoidingView style={styles.signup}>
  <        Block padding={[0, theme.sizes.base * 2]}>
           <Text h1 bold>
-            Sign Up
+            Registrarte
           </Text>
           <Block middle>
             <Input
               email
-              label="Email"
+              label="Correo electrónico"
               error={hasErrors("email")}
               style={[styles.input, hasErrors("email")]}
               defaultValue={this.state.email}
               onChangeText={text => this.setState({ email: text })}
             />
             <Input
-              label="Username"
-              error={hasErrors("username")}
-              style={[styles.input, hasErrors("username")]}
-              defaultValue={this.state.username}
-              onChangeText={text => this.setState({ username: text })}
+              label="Nombre de usuario"
+              error={hasErrors("name")}
+              style={[styles.input, hasErrors("name")]}
+              defaultValue={this.state.name}
+              onChangeText={text => this.setState({ name: text })}
             />
             <Input
               secure
-              label="Password"
+              label="Contraseña nueva"
               error={hasErrors("password")}
               style={[styles.input, hasErrors("password")]}
               defaultValue={this.state.password}
@@ -91,7 +137,7 @@ export default class SignUp extends Component {
                 <ActivityIndicator size="small" color="white" />
               ) : (
                 <Text bold white center>
-                  Sign Up
+                  Registrarte
                 </Text>
               )}
             </Button>
@@ -103,7 +149,7 @@ export default class SignUp extends Component {
                 center
                 style={{ textDecorationLine: "underline" }}
               >
-                Back to Login
+                Volver al Login
               </Text>
             </Button>
           </Block>

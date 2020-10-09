@@ -130,7 +130,7 @@ class Explore extends Component {
     const { cantidad, codProd } = this.state;
     const { params } = this.props.navigation.state;
     var user = JSON.parse(await AsyncStorage.getItem('user'));
-    fetch("http://192.168.1.44:3001/api/Carrito/agregar", {
+    fetch("http://192.168.0.25:3001/api/Carrito/agregar", {
       method: "POST",
       headers: {
         'Authorization': 'Bearer ' + params.token,
@@ -167,7 +167,7 @@ class Explore extends Component {
       latitud:params.latitud,
       longitud:params.longitud
     });
-    fetch("http://192.168.1.44:3001/api/Products/", {
+    fetch("http://192.168.0.25:3001/api/Products/", {
       method: "POST",
       headers: {
         'Authorization': 'Bearer ' + params.token,
