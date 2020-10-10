@@ -33,7 +33,9 @@ export default class SignUp extends Component {
       this.setState({ loading: false });
       return Alert.alert(
         "Error",
-        "Llene todos los campos",
+        "Llene todos los campos", [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+          ],
         { cancelable: false }
       );
     }
@@ -42,7 +44,9 @@ export default class SignUp extends Component {
       this.setState({ loading: false });
       return Alert.alert(
         "Error",
-        "El correo electrónico debe ser uno válido",
+        "El correo electrónico debe ser uno válido",[
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+          ],
         { cancelable: false }
       );
     }
@@ -51,12 +55,14 @@ export default class SignUp extends Component {
       this.setState({ loading: false });
       return Alert.alert(
         "Error",
-        "La contraseña debe contener al menos una Mayúscula, una Minúscula, un número y un signo especial ! @ # $ % y mínimo 8 caracteres",
+        "La contraseña debe contener al menos una Mayúscula, una Minúscula, un número y un signo especial ! @ # $ % y mínimo 8 caracteres",[
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+          ],
         { cancelable: false }
       );
     }
 
-    fetch("http://192.168.0.25:3001/api/security/signin",{
+    fetch("http://192.168.1.44:3001/api/security/signin",{
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -105,7 +111,7 @@ export default class SignUp extends Component {
     return (
       <KeyboardAvoidingView style={styles.signup}>
  <        Block padding={[0, theme.sizes.base * 2]}>
-          <Text h1 bold>
+          <Text style={styles.titulo} h1 bold>
             Registrarte
           </Text>
           <Block middle>
@@ -164,6 +170,9 @@ const styles = StyleSheet.create({
   signup: {
     flex: 1,
     justifyContent: "center"
+  },
+  titulo: {
+    marginTop:theme.sizes.base*1,
   },
   input: {
     borderRadius: 0,

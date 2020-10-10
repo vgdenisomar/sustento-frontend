@@ -56,7 +56,7 @@ export default class Login extends Component {
     //var value = this.form.getValue();
   
     let url = ApiUtils.urla
-    fetch(`http://192.168.0.25:3001/api/security/login`, {
+    fetch(`http://192.168.1.44:3001/api/security/login`, {
       method: "POST",
       headers: {
         'Accept': 'application/json',

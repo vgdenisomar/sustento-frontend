@@ -37,7 +37,7 @@ class Browse extends Component {
     var token=await AsyncStorage.getItem('id_token');
     var user =JSON.parse(await AsyncStorage.getItem('user'));
     this.setState({user:'Bienvenido '+user.nomCliente});
-    fetch("http://192.168.0.25:3001/api/Proveedores/", {
+    fetch("http://192.168.1.44:3001/api/Proveedores/", {
       method: "POST",
       headers: {
         'Authorization': 'Bearer ' + token,
