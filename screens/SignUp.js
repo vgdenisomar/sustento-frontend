@@ -111,9 +111,6 @@ export default class SignUp extends Component {
     return (
       <KeyboardAvoidingView style={styles.signup}>
  <        Block padding={[0, theme.sizes.base * 2]}>
-          <Text style={styles.titulo} h1 bold>
-            Registrarte
-          </Text>
           <Block middle>
             <Input
               email

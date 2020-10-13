@@ -7,13 +7,14 @@ import {
   StyleSheet,
   ScrollView,
   BackHandler,
+  RefreshControl,
   TouchableOpacity, AsyncStorage, View, Modal
 } from "react-native";
 import NumericInput from 'react-native-numeric-input'
 import * as Icon from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { Ionicons, EvilIcons, Entypo, AntDesign } from '@expo/vector-icons';
+import { Ionicons, EvilIcons, Entypo, AntDesign, MaterialIcons} from '@expo/vector-icons';
 import Toast from 'react-native-root-toast'
 
 import { Card, Button, Input, Block, Text } from "../components";
@@ -22,7 +23,10 @@ import ApiUtils from './ApiUtils';
 
 const { width, height } = Dimensions.get("window");
 
+
+
 class Explore extends Component {
+
   state = {
     searchFocus: new Animated.Value(0.6),
     searchString: null,
@@ -35,67 +39,13 @@ class Explore extends Component {
     codProd: 0,
     cantidad: 1,
     latitud:0,
-    longitud:0
+    longitud:0,
+    refreshing:false,
   };
 
-  handleSearchFocus(status) {
-    Animated.timing(this.state.searchFocus, {
-      toValue: status ? 0.8 : 0.6, // status === true, increase flex size
-      duration: 150 // ms
-    }).start();
-  }
-
-  renderSearch() {
-    const { searchString, searchFocus } = this.state;
-    const isEditing = searchFocus && searchString;
-
-    return (
-      <Block animated middle flex={searchFocus} style={styles.search}>
-        <Input
-          placeholder="Search"
-          placeholderTextColor={theme.colors.gray2}
-          style={styles.searchInput}
-          onFocus={() => this.handleSearchFocus(true)}
-          onBlur={() => this.handleSearchFocus(false)}
-          onChangeText={text => this.setState({ searchString: text })}
-          value={searchString}
-          onRightPress={() =>
-            isEditing ? this.setState({ searchString: null }) : null
-          }
-          rightStyle={styles.searchRight}
-          rightLabel={
-            <Icon.FontAwesome
-              name={isEditing ? "close" : "search"}
-              size={theme.sizes.base / 1.6}
-              color={theme.colors.gray2}
-              style={styles.searchIcon}
-            />
-          }
-        />
-      </Block>
-    );
-  }
-
-  renderImage(img, index) {
-    const { navigation } = this.props;
-    const sizes = Image.resolveAssetSource(img);
-    const fullWidth = width - theme.sizes.padding * 2.5;
-    const resize = (sizes.width * 100) / fullWidth;
-    const imgWidth = resize > 75 ? fullWidth : sizes.width * 1;
-
-    return (
-      <TouchableOpacity
-        key={`img-${index}`}
-        onPress={() => navigation.navigate("Product")}
-      >
-        <Image
-          source={img}
-          style={[styles.image, { minWidth: imgWidth, maxWidth: imgWidth }]}
-        />
-      </TouchableOpacity>
-    );
-  }
-
+  static navigationOptions = ({navigation}) => ({
+    title: 'Panaderia'
+})
   renderFooter() {
     return (
       <LinearGradient
@@ -158,6 +108,10 @@ class Explore extends Component {
 
   componentDidMount = async () => {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    this.getProductos();
+  }
+
+  getProductos(){
     const { params } = this.props.navigation.state;
     this.setState({
       proveedor: params.nombre,
@@ -181,18 +135,21 @@ class Explore extends Component {
       .then(ApiUtils.checkStatus)
       .then((response) => response.json())
       .then((response) => {
-        this.setState({ productos: response, loading: false });
+        this.setState({ productos: response, loading: false, refreshing:false});
       }
       )
       .catch((err) => { this.setState({ loading: false }); alert("Credenciales Incorrectas"); console.log('error:', err.message) })
       .done();
-    console.log(this.state.productos);
-
   }
+
+  onRefresh = () =>{
+    this.setState({refreshing:true});
+    this.getProductos();
+  };
 
   render() {
     const { profile, navigation } = this.props;
-    const { proveedor, productos, imagen, distancia, modalVisible, loading, loadingModal, codProd, cantidad,latitud,longitud } = this.state;
+    const { proveedor, productos, imagen, distancia, modalVisible, loading, loadingModal, codProd, cantidad,latitud,longitud, refreshing } = this.state;
     console.log(latitud);
     return (
       <Block>
@@ -201,7 +158,7 @@ class Explore extends Component {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
+            this.hideModal();
           }}
         >
           <View style={styles.centeredView}>
@@ -229,7 +186,10 @@ class Explore extends Component {
             </View>
           </View>
         </Modal>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} 
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh} />
+          }>
           <View style={styles.container}>
             <Image style={{ width: '100%', height: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 2 }} source={{ uri: 'http://sustento.000webhostapp.com/' + imagen }} />
             <View style={styles.texto}>
@@ -267,8 +227,11 @@ class Explore extends Component {
                           <Image style={{ borderTopRightRadius: 4, borderTopLeftRadius: 4, width: '100%', height: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 3 }} source={{ uri: 'http://sustento.000webhostapp.com/' + producto.imagenProd }} />
                         </TouchableOpacity>
                         <Card middle style={styles.category}>
-                          <Text style={{ textAlign: 'left' }}>{producto.nomProd} </Text>
-                          <Entypo onPress={() => this.modal(producto.codProd)} name='add-to-list' size={32} style={{ bottom: 0, right: 0, position: "absolute", textAlign: 'right', paddingRight: 5 }}></Entypo>
+                          <Text style={{ textAlign: 'left', width:'90%' }}>{producto.nomProd} </Text>
+                          <TouchableOpacity onPress={() => this.modal(producto.codProd)}
+                          style={{ top: 0, right: 0, position: "absolute", textAlign: 'right', paddingRight: 5 }}>
+                            <Ionicons name='ios-add-circle-outline' size={36}></Ionicons>
+                          </TouchableOpacity>
                           <Text style={{ textAlign: 'left' }} >Normal: L. {producto.precioProd} </Text>
                           <Text style={{ textAlign: 'left', marginRight: 10, color: '#26d30e' }} >Oferta: L. {producto.precioOfProd} </Text>
                         </Card>
@@ -289,7 +252,7 @@ class Explore extends Component {
 }
 
 Explore.defaultProps = {
-  images: mocks.explore
+  images: mocks.explore,
 };
 
 export default Explore;
@@ -298,7 +261,6 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: "flex-end",
-    marginTop: 22
   },
   modalView: {
     margin: 20,

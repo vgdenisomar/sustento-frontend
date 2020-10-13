@@ -48,12 +48,46 @@ export function fromRight(duration = 300) {
 const screens = createStackNavigator(
   {
     Welcome,
-    Login,
-    SignUp,
+    Login:{
+      screen:Login,
+      navigationOptions:({ navigation  })=>({
+        title:'Inicio de sesion',
+        headerTintColor: 'white',
+        headerTitleStyle: { 
+          fontSize: 22, 
+          color:'white',
+          fontWeight:'bold'
+      }, 
+        headerStyle: {
+          backgroundColor:'#c0e359'
+      },
+    })
+    },
+    SignUp:{
+      screen:SignUp,
+      navigationOptions:({ navigation  })=>({
+        title:'Registrarse',
+        headerTintColor: 'white',
+        headerTitleStyle: { 
+          fontSize: 22, 
+          color:'white',
+          fontWeight:'bold'
+      }, 
+        headerStyle: {
+          backgroundColor:'#c0e359'
+      },
+    })
+    },
     Forgot,
     Explore:{
       screen:Explore,
       navigationOptions:({ navigation  })=>({
+        headerTintColor: 'white',
+        headerTitleStyle: { 
+          fontSize: 22, 
+          color:'white',
+          fontWeight:'bold'
+      }, 
         headerStyle: {
           backgroundColor:'#c0e359'
       },
@@ -83,11 +117,31 @@ const screens = createStackNavigator(
     })
     },
     Product,
-    Settings,
+    Settings:{
+      screen:Settings,
+      navigationOptions:({ navigation  })=>({
+        title:'Perfil',
+        headerTintColor: 'white',
+        headerTitleStyle: { 
+          fontSize: 22, 
+          color:'white',
+          fontWeight:'bold'
+      }, 
+        headerStyle: {
+          backgroundColor:'#c0e359'
+      },
+    })
+    },
     Map:{
       screen:Map,
       navigationOptions:({ navigation  })=>({
         title: 'Ubicación',
+        headerTintColor: 'white',
+        headerTitleStyle: { 
+          fontSize: 22, 
+          color:'white',
+          fontWeight:'bold'
+      }, 
         headerStyle: {
           backgroundColor: '#c0e359',
       },

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Image, StyleSheet, ScrollView, TextInput } from "react-native";
+import { Image, StyleSheet, ScrollView, TextInput, AsyncStorage } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import Slider from "react-native-slider";
 
 import { Divider, Button, Block, Text, Switch } from "../components";
@@ -46,19 +47,22 @@ class Settings extends Component {
     return <Text bold>{profile[name]}</Text>;
   }
 
+  logout=async()=>{
+    const { navigation } = this.props;
+    try {
+        const keys = await AsyncStorage.getAllKeys();
+        await AsyncStorage.multiRemove(keys);
+        navigation.navigate("Welcome");
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
   render() {
     const { profile, editing } = this.state;
 
     return (
       <Block>
-        <Block flex={false} row center space="between" style={styles.header}>
-          <Text h1 bold>
-            Settings
-          </Text>
-          <Button>
-            <Image source={profile.avatar} style={styles.avatar} />
-          </Button>
-        </Block>
 
         <ScrollView showsVerticalScrollIndicator={false}>
           <Block style={styles.inputs}>
@@ -173,6 +177,18 @@ class Settings extends Component {
                 onValueChange={value => this.setState({ newsletter: value })}
               />
             </Block>
+            <Block
+              center
+              space="between"
+              style={{ marginBottom: theme.sizes.base * 2 }}
+            >
+              <TouchableOpacity style={styles.logout}
+                onPress={() => {
+                  this.logout();
+                }}>
+                <Text white center>Cerrar sesion</Text>
+              </TouchableOpacity>
+            </Block>
           </Block>
         </ScrollView>
       </Block>
@@ -187,6 +203,13 @@ Settings.defaultProps = {
 export default Settings;
 
 const styles = StyleSheet.create({
+  logout:{
+    backgroundColor: "#a8b83a",
+    borderRadius: 10,
+    padding: 15,
+    elevation: 2,
+    marginTop: 10
+  },
   header: {
     paddingHorizontal: theme.sizes.base * 2
   },

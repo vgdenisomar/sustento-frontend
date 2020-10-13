@@ -95,9 +95,6 @@ export default class Login extends Component {
     return (
       <KeyboardAvoidingView style={styles.login}>
           <Block >
-            <Text style={styles.titulo} h1 bold>
-              Inicio de sesión
-            </Text>
             <Block middle>
               <Image
                 source={require("../assets/images/logoSustento.png")}

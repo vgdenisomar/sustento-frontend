@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   BackHandler,
+  RefreshControl,
   StyleSheet,
   ScrollView,
   View,
@@ -15,6 +16,12 @@ import { theme, mocks } from "../constants";
 import ApiUtils from './ApiUtils';
 
 const { width } = Dimensions.get("window");
+
+const wait = (timeout) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+}
 
 var app = {
   backButtonDialog: true
@@ -28,12 +35,17 @@ class Browse extends Component {
     loading: true,
     user:"",
     backButtonDialog: true,
-    token:""
+    token:"",
+    refreshing:false
   };
 
 
-  componentDidMount=async()=>{
+  componentDidMount=()=>{
     //BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    this.getProveedores();
+  }
+
+  getProveedores=async()=>{
     var token=await AsyncStorage.getItem('id_token');
     var user =JSON.parse(await AsyncStorage.getItem('user'));
     this.setState({user:'Bienvenido '+user.nomCliente});
@@ -51,12 +63,11 @@ class Browse extends Component {
     .then(ApiUtils.checkStatus)
     .then((response) => response.json())
     .then((response) => {
-            this.setState({ proveedores: response, loading:false, token:token });
+            this.setState({ proveedores: response, loading:false, token:token, refreshing:false });
         }
     )
     .catch((err) =>{this.setState({ loading: false });alert("Credenciales Incorrectas");console.log('error:', err.message)})
     .done();
-
   }
 
   componentWillUnmount() {
@@ -79,10 +90,14 @@ class Browse extends Component {
         return false;
     }
   }
+  onRefresh = () =>{
+    this.setState({refreshing:true});
+    this.getProveedores();
+  };
 
   render() {
     const { profile, navigation } = this.props;
-    const { proveedores,loading, user, token } = this.state;
+    const { proveedores,loading, user, token, refreshing } = this.state;
 
     return (
       <Block>
@@ -97,6 +112,9 @@ class Browse extends Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={{ paddingVertical: theme.sizes.base * 2 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh} />
+          }
         >
           {loading ? (
                   <ActivityIndicator size="large" color="green"/>

@@ -6,7 +6,7 @@ import { Asset } from "expo-asset";
 
 import Navigation from "./navigation";
 import { Block } from "./components";
-
+console.disableYellowBox = true;
 // import all used images
 const images = [
   require("./assets/icons/back.png"),
