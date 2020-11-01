@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image, StyleSheet, ScrollView, TextInput, AsyncStorage } from "react-native";
+import { Image, StyleSheet, ScrollView, TextInput, AsyncStorage, BackHandler } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Slider from "react-native-slider";
 
@@ -15,6 +15,20 @@ class Settings extends Component {
     editing: null,
     profile: {}
   };
+
+  componentDidMount = async () => {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    this.getProductos();
+    console.log(Header.HEIGHT);
+  }
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+}
+
+  handleBackButton = () => {
+    this.props.navigation.goBack(null,BackHandler.addEventListener('hardwareBackPress', this.handleBackButton));
+    return true;
+   } 
 
   componentDidMount() {
     this.setState({ profile: this.props.profile });
@@ -57,6 +71,7 @@ class Settings extends Component {
         console.error(error);
     }
   }
+
 
   render() {
     const { profile, editing } = this.state;

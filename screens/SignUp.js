@@ -62,7 +62,7 @@ export default class SignUp extends Component {
       );
     }
 
-    fetch("http://192.168.1.44:3001/api/security/signin",{
+    fetch(window.$url+'api/security/signin',{
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -109,7 +109,7 @@ export default class SignUp extends Component {
     const hasErrors = key => (errors.includes(key) ? styles.hasErrors : null);
 
     return (
-      <KeyboardAvoidingView style={styles.signup}>
+      <KeyboardAvoidingView style={styles.signup} behavior={Platform.OS == "ios" ? "padding" : "padding"}>
  <        Block padding={[0, theme.sizes.base * 2]}>
           <Block middle>
             <Input

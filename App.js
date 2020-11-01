@@ -6,6 +6,9 @@ import { Asset } from "expo-asset";
 
 import Navigation from "./navigation";
 import { Block } from "./components";
+
+window.$url = 'https://sustento-backend.herokuapp.com/'
+
 console.disableYellowBox = true;
 // import all used images
 const images = [

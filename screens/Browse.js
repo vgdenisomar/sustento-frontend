@@ -8,10 +8,9 @@ import {
   StyleSheet,
   ScrollView,
   View,
-  TouchableOpacity, AsyncStorage,Alert 
+  TouchableOpacity, AsyncStorage, Alert
 } from "react-native";
-
-import { Card, Badge, Button, Block, Text } from "../components";
+import { FontAwesome, Ionicons, AntDesign } from '@expo/vector-icons'; import { Card, Badge, Button, Block, Text } from "../components";
 import { theme, mocks } from "../constants";
 import ApiUtils from './ApiUtils';
 
@@ -33,23 +32,37 @@ class Browse extends Component {
     active: "Products",
     proveedores: [],
     loading: true,
-    user:"",
+    user: "",
     backButtonDialog: true,
-    token:"",
-    refreshing:false
+    token: "",
+    refreshing: false
   };
 
+  onButtonPress = () => {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    // then navigate
+    navigate('NewScreen');
+  }
+  
+  handleBackButton = () => {
+    BackHandler.exitApp()
+    return true;
+  } 
 
-  componentDidMount=()=>{
-    //BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+  
+  componentDidMount = () => {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     this.getProveedores();
   }
 
-  getProveedores=async()=>{
-    var token=await AsyncStorage.getItem('id_token');
-    var user =JSON.parse(await AsyncStorage.getItem('user'));
-    this.setState({user:'Bienvenido '+user.nomCliente});
-    fetch("http://192.168.1.44:3001/api/Proveedores/", {
+  getProveedores = async () => {
+    var token = await AsyncStorage.getItem('id_token');
+    var user = JSON.parse(await AsyncStorage.getItem('user'));
+    this.setState({ user: '¡Hola ' + user.nomCliente + '!'});
+    fetch(window.$url+'api/Proveedores/', {
       method: "POST",
       headers: {
         'Authorization': 'Bearer ' + token,
@@ -60,89 +73,81 @@ class Browse extends Component {
         codCliente: user.codCliente,
       })
     })
-    .then(ApiUtils.checkStatus)
-    .then((response) => response.json())
-    .then((response) => {
-            this.setState({ proveedores: response, loading:false, token:token, refreshing:false });
-        }
-    )
-    .catch((err) =>{this.setState({ loading: false });alert("Credenciales Incorrectas");console.log('error:', err.message)})
-    .done();
+      .then(ApiUtils.checkStatus)
+      .then((response) => response.json())
+      .then((response) => {
+        this.setState({ proveedores: response, loading: false, token: token, refreshing: false });
+      }
+      )
+      .catch((err) => { this.setState({ loading: false }); alert("Credenciales Incorrectas"); console.log('error:', err.message) })
+      .done();
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-  }
 
-    handleBackButton() {
-      if(app.backButtonDialog){
-        // Prompt for exit
-        Alert.alert(
-          'Exit app',
-          'Exit app?',
-          [
-            { text: 'No', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-            { text: 'Yes', onPress: () => BackHandler.exitApp() },
-          ],
-          { cancelable: false })
-        return true;
-    }else{
-        return false;
-    }
-  }
-  onRefresh = () =>{
-    this.setState({refreshing:true});
+  onRefresh = () => {
+    this.setState({ refreshing: true });
     this.getProveedores();
   };
 
   render() {
     const { profile, navigation } = this.props;
-    const { proveedores,loading, user, token, refreshing } = this.state;
+    const { proveedores, loading, user, token, refreshing } = this.state;
 
     return (
       <Block>
-        <Block flex={false} row center space="between" style={styles.header}>
-          <Text h1 bold>
-            {user}
-          </Text>
-          <Button onPress={() => navigation.navigate("Settings")}>
-            <Image source={profile.avatar} style={styles.avatar} />
-          </Button>
-        </Block>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={{ paddingVertical: theme.sizes.base * 2 }}
+          style={{ paddingVertical: theme.sizes.base * 0 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh} />
           }
         >
           {loading ? (
-                  <ActivityIndicator size="large" color="green"/>
-                ) : (
-          <Block flex={false} row space="between" style={styles.categories}>
-            {proveedores.map(proveedor => (
-              <TouchableOpacity
-                key={proveedor.codProveedor}
-                onPress={() => navigation.navigate("Explore",{id:proveedor.codProveedor, nombre:proveedor.nomProveedor, latitud:proveedor.latitud, longitud:proveedor.longitud, imagen:proveedor.imagen, distancia:proveedor.distancia, token:token} )}
-              >
-                <Image style={{ borderTopRightRadius:4,borderTopLeftRadius:4,width: '100%', height:(width - theme.sizes.padding * 2.4 - theme.sizes.base) / 3 }} source={{ uri: 'http://sustento.000webhostapp.com/'+proveedor.imagen }} />
-                <Card center middle style={styles.category}>
-                  <View style={styles.texto}>
-                    <Text medium height={20} style={styles.texto2} >
-                      {proveedor.nomProveedor}
+            <ActivityIndicator size="large" color="green" style={{paddingTop:20}} />
+          ) : (
+              <View>
+                <Block flex={false} row center space="between" style={styles.header}>
+                  <Text h1 bold>
+                    {user}
+                  </Text>
+                  <Button onPress={() => navigation.navigate("Settings")}>
+                    <Image source={profile.avatar} style={styles.avatar} />
+                  </Button>
+                </Block>
+                <View style={styles.categories}>
+                  {proveedores.map(proveedor => (
+                    <TouchableOpacity
+                      key={proveedor.codProveedor}
+                      style={styles.category}
+                      onPress={() => {navigation.navigate("Explore", { id: proveedor.codProveedor, nombre: proveedor.nomProveedor, latitud: proveedor.latitud, longitud: proveedor.longitud, imagen: proveedor.imagen, distancia: proveedor.distancia, token: token })}}
+                    >
+                      <Image style={{ borderTopRightRadius: 3, borderTopLeftRadius: 3, width: '100%', height: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 3 }} source={{ uri: 'http://sustento-pro.herokuapp.com/' + proveedor.imagen }} />
+                      <View style={styles.texto}>
+                        <Text style={styles.texto2} >
+                          {proveedor.nomProveedor}
+                        </Text>
+                      </View>
+                      <View style={{ padding: 6, paddingTop: 10 }}>
+                        <Text gray caption>
+                          <Ionicons name="md-time" size={24} color="black" /> 10:00 am - 19:00 pm
                     </Text>
-                  </View>
-                  <Text gray caption>
-                    {proveedor.productos} productos
-                  </Text>
-                  <Text style={{ color:'green'}} medium height={20}>
-                    {proveedor.distancia} KM
-                  </Text>
-                </Card>
-              </TouchableOpacity>
-            ))}
-          </Block>
-          )}
+                        <View style={{ padding:6,paddingTop:10,right:0,position:"absolute",flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                          <AntDesign name="bars" size={20} color="black" />
+                          <Text>
+                            {proveedor.productos} productos
+                    </Text>
+                        </View>
+                        <Text style={{ color: 'green', paddingTop: 5, paddingLeft: 3 }} medium height={20}>
+                          <FontAwesome name="map-marker" size={24} color="black" /> {proveedor.distancia} KM
+                    </Text>
+                      </View>
+
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+            )}
         </ScrollView>
       </Block>
     );
@@ -164,13 +169,18 @@ const styles = StyleSheet.create({
     height: theme.sizes.base * 2.2,
     width: theme.sizes.base * 2.2
   },
-  texto:{
-    borderRadius:5,
-    backgroundColor:"#F7CC20"
+  texto: {
+    borderRadius: 5,
+    position: "absolute",
+    top: 80,
+    left: 22,
+    backgroundColor: "#F7CC20",
   },
-  texto2:{
+  texto2: {
     paddingHorizontal: theme.sizes.base * 1,
-    color:"white",
+    paddingVertical: theme.sizes.base * 0.5,
+    color: "white",
+    fontSize: 18
   },
   tabs: {
     borderBottomColor: theme.colors.gray2,
@@ -187,24 +197,22 @@ const styles = StyleSheet.create({
     borderBottomWidth: 3
   },
   categories: {
-    shadowColor: "#000",
-shadowOffset: {
-	width: 0,
-	height: 2,
-},
-shadowOpacity: 0.25,
-shadowRadius: 3.84,
-
-elevation: 5,
-    flexWrap: "wrap",
-    paddingHorizontal: theme.sizes.base * 2,
-    marginBottom: theme.sizes.base * 3.5
+    paddingHorizontal: theme.sizes.base * 1.5,
+    marginBottom: theme.sizes.base * 3.5,
   },
   category: {
-    borderRadius: 6,
-    borderTopRightRadius:0,
-    borderTopLeftRadius:0,
-    padding: theme.sizes.base + 4,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 1,
+    borderRadius: 3,
+    borderTopRightRadius: 0,
+    borderTopLeftRadius: 0,
     marginBottom: theme.sizes.base,
     /*shadowColor: "#000",
     shadowOffset: {
@@ -215,8 +223,8 @@ elevation: 5,
     shadowRadius: 1,
     elevation: 5,*/
     // this should be dynamic based on screen width
-    minWidth: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 2,
-    maxWidth: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 2,
-    maxHeight: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 2
+    minWidth: (width - theme.sizes.padding * 1.4 - theme.sizes.base),
+    maxWidth: (width - theme.sizes.padding * 1.4 - theme.sizes.base),
+    maxHeight: (width - theme.sizes.padding * 1.4 - theme.sizes.base),
   }
 });

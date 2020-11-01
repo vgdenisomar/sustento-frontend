@@ -20,15 +20,13 @@ import Toast from 'react-native-root-toast'
 import { Card, Button, Input, Block, Text } from "../components";
 import { theme, mocks } from "../constants";
 import ApiUtils from './ApiUtils';
-import { Header } from 'react-navigation-stack';
 
 const { width, height } = Dimensions.get("window");
 
-class Explore extends Component {
-  constructor(props) {
-    super(props)
-    this.handleBackButtonClick = this.handleBackButton.bind(this);
-}
+
+
+class DetalleProducto extends Component {
+
   state = {
     searchFocus: new Animated.Value(0.6),
     searchString: null,
@@ -109,58 +107,12 @@ class Explore extends Component {
   }
 
   componentDidMount = async () => {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-    this.getProductos();
-    console.log(Header.HEIGHT);
-  }
-  componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-}
-
-  handleBackButton = () => {
-    this.props.navigation.goBack(null,BackHandler.addEventListener('hardwareBackPress', this.handleBackButton));
-    return true;
-   } 
- 
-
-  getProductos(){
-    const { params } = this.props.navigation.state;
-    this.setState({
-      proveedor: params.nombre,
-      imagen: params.imagen,
-      distancia: params.distancia,
-      token: params.token,
-      latitud:params.latitud,
-      longitud:params.longitud
-    });
-    fetch(window.$url+'api/Products/', {
-      method: "POST",
-      headers: {
-        'Authorization': 'Bearer ' + params.token,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        codProveedor: params.id,
-      })
-    })
-      .then(ApiUtils.checkStatus)
-      .then((response) => response.json())
-      .then((response) => {
-        this.setState({ productos: response, loading: false, refreshing:false});
-      }
-      )
-      .catch((err) => { this.setState({ loading: false }); alert("Credenciales Incorrectas"); console.log('error:', err.message) })
-      .done();
   }
-
-  onRefresh = () =>{
-    this.setState({refreshing:true});
-    this.getProductos();
-  };
 
   render() {
     const { profile, navigation } = this.props;
+    const { params } = this.props.navigation.state;
     const { proveedor, productos, imagen, distancia, modalVisible, loading, loadingModal, codProd, cantidad,latitud,longitud, refreshing } = this.state;
     console.log(latitud);
     return (
@@ -183,13 +135,13 @@ class Explore extends Component {
               />
               <AntDesign onPress={() => { this.hideModal(); }} name="close" size={30} color="black" style={{ top: 0, left: 0, position: "absolute", textAlign: 'right', margin: 10 }} />
               <TouchableOpacity
-                style={{ ...styles.openButton, backgroundColor: "#a8b83a" }}
+                style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
                 onPress={() => {
                   this.agregar();
                 }}
               >
                 {loadingModal ? (
-                  <ActivityIndicator size="small" color="white" />
+                  <ActivityIndicator size="large" color="white" />
                 ) : (
                     <Text style={styles.textStyle}>Agregar al pedido</Text>
                   )}
@@ -198,64 +150,30 @@ class Explore extends Component {
             </View>
           </View>
         </Modal>
-        <ScrollView showsVerticalScrollIndicator={false} onScroll={ Animated.event([{nativeEvent: {contentOffset: {y: this._animatedValue}}}]) }
-            scrollEventThrottle={16}
+        <ScrollView showsVerticalScrollIndicator={false} 
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh} />
           }>
           <View style={styles.container}>
-            <Image style={{ width: '100%', height: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 1.7 }} source={{ uri: 'http://sustento-pro.herokuapp.com/' + imagen }} />
-            <TouchableOpacity style={styles.back} onPress={() => navigation.navigate("Browse")}>
-              <AntDesign style={styles.back2} name='left' color='white' size={36}></AntDesign>
-            </TouchableOpacity>
+            <Image style={{ width: '100%', height: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 2 }} source={{ uri: 'http://sustento.000webhostapp.com/' + params.imagen }} />
             <View style={styles.texto}>
-              <Text style={styles.texto2}>{proveedor}</Text>
+              <Text style={styles.texto2}>{params.nombre}</Text>
             </View>
-            <TouchableOpacity style={styles.distancia}
-              onPress={() => navigation.navigate("Map", { latitud: latitud, longitud: longitud})}
-            >
-              <Text style={styles.distancia2}>{distancia} Km</Text>
-            </TouchableOpacity>
           </View>
           <View style={{ paddingHorizontal: theme.sizes.base * 1 }}>
+            <Text >Breve descripcion del proveedor</Text>
+            <Text style={{ fontSize: 18, marginTop: 5 }}>Productos</Text>
             <View
               style={{
-                marginBottom: 10,
-                marginTop: 10
+                borderBottomColor: '#a8b83a',
+                borderBottomWidth: 1,
+                marginBottom: 10
               }}
             />
           </View>
           <View>
             <Block style={{ marginBottom: height / 12 }}>
-              {loading ? (
-                <ActivityIndicator size="large" color="green" />
-              ) : (
-                  <Block flex={false} row space="between" style={styles.categories}>
-                    {productos.map(producto => (
-                      <View key={producto.codProd}>
-                        <TouchableOpacity
-                          key={producto.codProd}
-                          onPress={() => navigation.navigate("DetalleProducto", { id: producto.codProd, nombre:producto.nomProd,descripcion:producto.desc,cantidad:producto.cant,imagen:producto.imagenProd,normal:producto.precioProd, oferta:producto.precioOfProd,  })}
-                        >
-                          <Image style={{ borderTopRightRadius: 4, borderTopLeftRadius: 4, width: '100%', height: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 3 }} source={{ uri: 'http://sustento.000webhostapp.com/' + producto.imagenProd }} />
-                        </TouchableOpacity>
-                        <Card middle style={styles.category}>
-                        <View style={styles.producto}>
-                          <Text style={styles.producto2}>{producto.nomProd}</Text>
-                        </View>
-                          <TouchableOpacity onPress={() => this.modal(producto.codProd)}
-                          style={{ top: 0, right: 0, position: "absolute", textAlign: 'right', paddingRight: 5  }}>
-                            <Ionicons name='ios-add-circle-outline' size={36}></Ionicons>
-                          </TouchableOpacity>
-                          <Text style={{ textAlign: 'left', fontSize:12,marginTop:10, color:"#0006",textDecorationLine: 'line-through', textDecorationStyle: 'solid'}} >L. {producto.precioProd.toFixed(2)} </Text>
-                          <Text style={{ textAlign: 'left'}} >L. {producto.precioOfProd.toFixed(2)} </Text>
-                          <Text style={{ textAlign: 'left', marginRight: 10, fontWeight:"bold", fontSize:11  }} >*Disponible hasta el 27 de enero</Text>
-                        </Card>
-                      </View>
 
-                    ))}
-                  </Block>
-                )}
             </Block>
           </View>
 
@@ -267,17 +185,16 @@ class Explore extends Component {
   }
 }
 
-Explore.defaultProps = {
+DetalleProducto.defaultProps = {
   images: mocks.explore,
 };
 
-export default Explore;
+export default DetalleProducto;
 
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: '#000000AA',
   },
   modalView: {
     margin: 20,
@@ -295,12 +212,11 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   openButton: {
-    backgroundColor: "#a8b83a",
+    backgroundColor: "#F194FF",
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    marginTop: 10,
-    width:'50%'
+    marginTop: 10
   },
   textStyle: {
     color: "white",
@@ -312,29 +228,21 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   container: {
+    marginTop: 10,
+    paddingHorizontal: theme.sizes.base * 1,
     position: "relative",
-    textAlign: "center",
+    textAlign: "center"
   },
   texto: {
     borderRadius: 5,
     position: "absolute",
-    marginTop: Header.HEIGHT*0.5,
-    top: 10,
-    left: 50,
+    bottom: -10,
+    left: 22,
+    backgroundColor: "#F7CC20"
   },
   texto2: {
-    color: "white",
-    fontWeight:"bold",
-    fontSize: 25
-  },
-  back: {
-    borderRadius: 5,
-    position: "absolute",
-    marginTop: Header.HEIGHT*0.5,
-    top: 15,
-    left: 10,
-  },
-  back2: {
+    paddingHorizontal: theme.sizes.base * 1,
+    paddingVertical: theme.sizes.base * 0.5,
     color: "white",
     fontSize: 25
   },
@@ -352,7 +260,7 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   producto: {
-    borderRadius: 6,
+    borderRadius: 2,
     position: "absolute",
     top: -22,
     left: 5,
@@ -361,7 +269,7 @@ const styles = StyleSheet.create({
   producto2: {
     paddingHorizontal: theme.sizes.base * 1,
     paddingVertical: theme.sizes.base * 0.3,
-    color: "white"
+    color: "white",
   },
   titulo: {
     marginTop: theme.sizes.base * 1
@@ -429,7 +337,7 @@ const styles = StyleSheet.create({
 
     elevation: 5,
     flexWrap: "wrap",
-    paddingHorizontal: theme.sizes.base * 1.5,
+    paddingHorizontal: theme.sizes.base * 2,
     marginBottom: theme.sizes.base * 3.5,
   },
   category: {
@@ -443,10 +351,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 1,
     elevation: 5,
+    backgroundColor:"#a8b83a",
     paddingHorizontal: theme.sizes.base * 0.5,
-    borderColor:"#a8b83a",
-    borderWidth:1,
-    borderTopWidth:0,
     // this should be dynamic based on screen width
     paddingBottom: theme.sizes.base + 2,
     minWidth: (width - theme.sizes.padding * 2.4 - theme.sizes.base) / 2,

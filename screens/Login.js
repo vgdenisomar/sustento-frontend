@@ -56,7 +56,7 @@ export default class Login extends Component {
     //var value = this.form.getValue();
   
     let url = ApiUtils.urla
-    fetch(`http://192.168.1.44:3001/api/security/login`, {
+    fetch(window.$url+'api/security/login', {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -80,7 +80,9 @@ export default class Login extends Component {
     )
     .catch((err) =>{this.setState({ loading: false });Alert.alert(
       "Error",
-      "Credenciales Incorrectas",
+      "Verifique su conexion o credenciales", [
+        { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
       { cancelable: false }
     );console.log('error:', err.message)})
     .done();
@@ -93,13 +95,13 @@ export default class Login extends Component {
     const hasErrors = key => (errors.includes(key) ? styles.hasErrors : null);
 
     return (
-      <KeyboardAvoidingView style={styles.login}>
+      <KeyboardAvoidingView style={styles.login} behavior={Platform.OS == "ios" ? "padding" : "height"}>
           <Block >
-            <Block middle>
+            <Block style={styles.content}>
               <Image
                 source={require("../assets/images/logoSustento.png")}
                 resizeMode="contain"
-                style={{ paddingLeft:0,width, height: height / 5, overflow: "visible"}}
+                style={{ paddingLeft:0,width, height: height / 3, overflow: "visible"}}
               />
               <View style={styles.container}>
               <Input 
@@ -147,6 +149,10 @@ export default class Login extends Component {
 }
 
 const styles = StyleSheet.create({
+  content:{
+    justifyContent: "center",
+    marginTop:-3*theme.sizes.base
+  },
   container:{
     paddingHorizontal:theme.sizes.base * 2
   },

@@ -6,7 +6,8 @@ import {
   FlatList,
   Modal,
   StyleSheet,
-  ScrollView
+  ScrollView,
+  AsyncStorage
 } from "react-native";
 
 import { Button, Block, Text } from "../components";
@@ -24,6 +25,16 @@ class Welcome extends Component {
   state = {
     showTerms: false
   };
+  componentDidMount=async()=>{
+    const { navigation } = this.props;
+    var token = await AsyncStorage.getItem('id_token');
+    var user = JSON.parse(await AsyncStorage.getItem('user'));
+    if(token!=null && user!=null)
+    {
+      navigation.navigate('Browse');
+      console.log('hola');
+    }
+  }
 
   renderTermsService() {
     return (

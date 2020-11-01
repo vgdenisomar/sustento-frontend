@@ -1,9 +1,8 @@
 {
   "expo": {
-    "name": "plant-app",
-    "slug": "plant-app",
+    "name": "Sustento",
+    "slug": "Sustento",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
       "android"
@@ -12,7 +11,7 @@
     "orientation": "portrait",
     "icon": "./assets/logoSustento.png",
     "splash": {
-      "image": "./assets/splashSustento.jpeg",
+      "image": "./assets/splashSustento.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -24,6 +23,10 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.sustento.sustento",
+      "enableDangerousExperimentalLeanBuilds": true
     }
   }
 }

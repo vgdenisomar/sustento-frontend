@@ -13,6 +13,7 @@ import Explore from "../screens/Explore";
 import Browse from "../screens/Browse";
 import Product from "../screens/Product";
 import Settings from "../screens/Settings";
+import DetalleProducto from "../screens/DetalleProducto";
 import Map from "../screens/map";
 import { Animated, Easing, Platform } from 'react-native';
 
@@ -51,15 +52,14 @@ const screens = createStackNavigator(
     Login:{
       screen:Login,
       navigationOptions:({ navigation  })=>({
-        title:'Inicio de sesion',
-        headerTintColor: 'white',
+        headerTintColor: 'black',
         headerTitleStyle: { 
           fontSize: 22, 
           color:'white',
           fontWeight:'bold'
       }, 
         headerStyle: {
-          backgroundColor:'#c0e359'
+          backgroundColor:'#'
       },
     })
     },
@@ -82,14 +82,15 @@ const screens = createStackNavigator(
     Explore:{
       screen:Explore,
       navigationOptions:({ navigation  })=>({
-        headerTintColor: 'white',
+        header: null,
+        headerTintColor: 'black',
         headerTitleStyle: { 
           fontSize: 22, 
           color:'white',
           fontWeight:'bold'
       }, 
         headerStyle: {
-          backgroundColor:'#c0e359'
+          backgroundColor:'#'
       },
     })
     },
@@ -146,10 +147,22 @@ const screens = createStackNavigator(
           backgroundColor: '#c0e359',
       },
     })
+    },
+    DetalleProducto:{
+      screen:DetalleProducto,
+      navigationOptions:({ navigation  })=>({
+        title: 'Detalle',
+        headerTintColor: 'white',
+        headerTitleStyle: { 
+          fontSize: 22, 
+          color:'white',
+          fontWeight:'bold'
+      }, 
+        headerStyle: {
+          backgroundColor: '#c0e359',
+      },
+    })
     }
-  },
-  {
-    transitionConfig: () => fromRight()
   }
 );
 
